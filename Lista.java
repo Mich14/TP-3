@@ -10,6 +10,16 @@ public class Lista {
 				}
 				else{return false;}
 			}
+			
+			void InsertaFinal2(String Dato, String Tipo, String Valor) {
+				if (VaciaLista()){
+					Primero = Ultimo = new Nodo(Dato, Valor);}
+					
+				else {
+					Ultimo.siguiente = new Nodo(Dato, Valor);
+					Ultimo=Ultimo.siguiente;
+				}
+			}
 	// Se encarga de 
 			
 			void InsertaBool(String Dato, Boolean Cumple) {	
@@ -108,7 +118,7 @@ public class Lista {
 				else {
 					Nodo aux=Primero;
 					while (aux!=null){
-						System.out.print (aux.dato + " ");
+						System.out.println (aux.dato + " "+aux.tipo+" "+aux.valor+" ");
 						aux=aux.siguiente;
 					}
 				}

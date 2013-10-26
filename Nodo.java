@@ -3,13 +3,21 @@ public class Nodo {
 
 	
 	Nodo Puntero,  anterior, siguiente;//Puntero: es pacio para apuntar a otra lista.
-	String dato, valor;
+	String dato, tipo, valor;
 	boolean cumple;//Un espacio en el nodo mediante el cual se almacena el cumplimiento de todas las condiciones
 				
 	Nodo(String Dato, String Valor ) {//Nodo que recibe dos valores de tipo String
 		dato = Dato;
 		valor = Valor;
 		siguiente = null;
+	}
+	
+	Nodo(String Dato, String Tipo, String Valor ) {//Nodo que recibe dos valores de tipo String
+		dato = Dato;
+		tipo = Tipo;
+		valor = Valor;
+		siguiente = null;
+		anterior = null;
 	}
 	
     Nodo (String Dato, Nodo P, boolean Cumple) {//Nodo que almacena un dato tipo string, otro de tipo nodo, y un boolean  
@@ -33,5 +41,6 @@ public class Nodo {
     	siguiente = null;  //siguiente con valor de nulo
     	anterior = null;
     }
+    
     
 }
