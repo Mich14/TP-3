@@ -17,6 +17,7 @@ public class Lista {
 					
 				else {
 					Ultimo.siguiente = new Nodo(Dato, Tipo,  Valor);
+					Ultimo.siguiente.anterior = Ultimo;
 					Ultimo=Ultimo.siguiente;
 				}
 			}

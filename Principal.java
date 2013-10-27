@@ -1,7 +1,12 @@
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 public class Principal {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ScriptException {
 		new LeerArchivo ();
+		
+				
 		/*Identifica nuevo = new Identifica();
 		Lista p = new Lista();
 		Lista p1 = new Lista();
@@ -21,6 +26,12 @@ public class Principal {
 		nuevo.Inserta(p1);
 		
 		nuevo.LResultado.Imprimir(); */
+		
+		
+		
+
+		
+
 	}
 
 }

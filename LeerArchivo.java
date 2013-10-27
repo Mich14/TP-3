@@ -139,6 +139,7 @@ public class LeerArchivo extends JFrame implements ActionListener {
 				    while (Aux_expresion != null)  {
 				    	
 				    	if (Aux_expresion.dato.equals("val") || Aux_expresion.siguiente == null){
+				    		if(Aux_expresion.siguiente == null)L_aux.InsertaFinal(Aux_expresion.dato);
 				    		System.out.println();	
 				    	// llaman a los metodos
 				    		//L_aux.Imprimir();
