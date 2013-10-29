@@ -12,12 +12,13 @@ public class Lista {
 			}
 			
 			void InsertaFinal2(String Dato, String Tipo, String Valor) {
+				Nodo Nuevo = new Nodo(Dato, Tipo, Valor);
 				if (VaciaLista()){
-					Primero = Ultimo = new Nodo(Dato, Tipo, Valor);}
+					Primero = Ultimo = Nuevo;}
 					
 				else {
-					Ultimo.siguiente = new Nodo(Dato, Tipo,  Valor);
-					Ultimo.siguiente.anterior = Ultimo;
+					Ultimo.siguiente = Nuevo;
+					Nuevo.anterior = Ultimo;
 					Ultimo=Ultimo.siguiente;
 				}
 			}
@@ -29,9 +30,9 @@ public class Lista {
 					
 				else {
 					Nodo nuevo = new Nodo(Dato, Cumple);
-					nuevo.siguiente = Primero;
-					Primero.anterior = nuevo;
-					Primero = nuevo;
+					Ultimo.siguiente = nuevo;
+					nuevo.anterior = Ultimo;
+					Ultimo=Ultimo.siguiente;
 				}}
 			
 			
