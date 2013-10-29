@@ -1,9 +1,11 @@
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 
 class Tabla extends AbstractTableModel {
 	
 	static Object[][] filas;
 	static String[] columnas;
+	
 	//static int x;
 	
 	public int getColumnCount() {
@@ -35,4 +37,6 @@ class Tabla extends AbstractTableModel {
 		filas[row][col] = value;
 		fireTableCellUpdated(row, col);
 	}
+	
+	
 }

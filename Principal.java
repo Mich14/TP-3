@@ -1,6 +1,15 @@
 public class Principal {
 
 	public static void main(String[] args) {
+		/*
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		Identifica.LResultado.InsertaFinal2("v", "int", "5");
+		*/
+		//new Ambientes();
 		new LeerArchivo ();
 		
 		

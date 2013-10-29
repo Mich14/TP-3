@@ -23,25 +23,28 @@ public class LeerArchivo extends JFrame implements ActionListener {
 	public LeerArchivo() {
 		
 		Container ventana = getContentPane();
-		setBounds(500, 200, 600, 300);
+		setBounds(500, 200, 600, 100);
 		setTitle("Manejador de tablas de símbolos");
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		JPanel P_principal = new JPanel();
-		P_principal.setBackground(Color.white);
+		P_principal.setBackground(Color.gray);
 		P_principal.setLayout(new BorderLayout());
 		
 		
 		JPanel P_indicaciones = new JPanel();
-		P_indicaciones.setBackground(Color.white);
+		P_indicaciones.setBackground(Color.gray);
 		
 		abrir = new JButton("Seleccionar");
 	    abrir.addActionListener(this);
+	    abrir.setBackground(new Color (139, 28, 98));
+	    abrir.setForeground(Color.white);
+	    abrir.setFont(new java.awt.Font("Segoe Print", Font.BOLD, 15));
 		
 	    JLabel L_indicaciones = new JLabel ("    Haga click en seleccionar para elegir el archivo"  );
 		//Titulo.setIcon(new ImageIcon(getClass().getResource("Compras.png")));
-	    L_indicaciones.setForeground(new Color (255,149,0));
+	    L_indicaciones.setForeground(new Color (139, 28, 98));
 	    L_indicaciones.setFont(new java.awt.Font("Segoe Print", Font.BOLD, 20));
 	    
 	    JLabel L_relleno = new JLabel (""  );
@@ -58,17 +61,22 @@ public class LeerArchivo extends JFrame implements ActionListener {
 		//Lista LGeneral = new Lista();
 		JFileChooser elegir = new JFileChooser();
 		elegir.showOpenDialog(abrir);
+		
 	               
 	    //Si presionamos el boton ABRIR en pathArchivo obtenemos el path del archivo
 	    if (evento.getSource() == abrir) {
+	    	if(elegir.getSelectedFile()==null){
+	    		setVisible(false);
+	    	}
+	    	else {
 		    String Ruta = elegir.getSelectedFile().getPath(); //Obtiene path del archivo
-		    String nombre = elegir.getSelectedFile().getName(); //obtiene nombre del archivo
-	    
 		    setVisible(false);
-		    //System.out.println("El path del archivo es: "+ Ruta);
-		    leerArchivo(Ruta);
-		   		    
+		    leerArchivo(Ruta); 
+		    new Ambientes();
+	    	}
+	    	
 	    }
+	    
 	}
 	          
     
