@@ -1,11 +1,9 @@
 import javax.swing.table.AbstractTableModel;
 
 class Tabla1 extends AbstractTableModel {
-	
+
 	static Object[][] filas;
 	static String[] columnas;
-	
-	//static int x;
 	
 	public int getColumnCount() {
 		return columnas.length;
@@ -15,21 +13,16 @@ class Tabla1 extends AbstractTableModel {
 		return filas.length;
 	}
 
-	//retornamos el elemento indicado
 	public String getColumnName(int col) {
 		return columnas[col];
-	 }
+	}
+	
 	public Object getValueAt(int row, int col) {
 		 return filas[row][col];
 	}
 
 	public boolean isCellEditable(int row, int col) {
-		//if ((col==3) && (x == 1)){
-			return true;
-		//}
-		//else{
-			//return false;
-		//}
+		return true;
 	}
 	
 	public void setValueAt(Object value, int row, int col) {

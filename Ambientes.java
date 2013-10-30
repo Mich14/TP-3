@@ -157,16 +157,14 @@ public class Ambientes extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 	
-	if (e.getSource() == b_volver) {
-		setVisible(false);
-		Identifica.LResultado.Primero = null;
-		new LeerArchivo();
+		if (e.getSource() == b_volver) {
+			setVisible(false);
+			Identifica.LResultado.Primero = null;
+			new LeerArchivo();
+		}
+			
 	}
-		
-	}
-
-	
 
 }
