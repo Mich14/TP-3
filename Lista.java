@@ -78,5 +78,35 @@ public class Lista {
 			}
 		}
 	}
+	
+	void ImprimirS () {
+		if (ListaVacia()){
+			System.out.println("No puede imprimir nada por que la lista no tiene nada ");
+		}
+		else {
+			Nodo aux=Primero;
+			while (aux!=null){
+				System.out.print (aux.dato + " ");
+				aux=aux.siguiente;
+			}
+			System.out.println ("");
+		}
+	}
+	
+	void ImprimirBool () {
+		if (ListaVacia()){
+			System.out.println("No puede imprimir nada por que la lista no tiene nada ");
+		}
+		
+		else {
+			Nodo aux=Primero;
+			while (aux!=null){
+				if (aux.dato.equals(""))
+					System.out.print (aux.cumple + " ");
+				else System.out.print (aux.dato + " "); 
+				aux=aux.siguiente;
+			}
+		}
+	}
 			
 }

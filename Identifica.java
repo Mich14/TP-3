@@ -1,7 +1,7 @@
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.text.html.parser.Parser;
+
 
 
 public class Identifica {
@@ -15,85 +15,97 @@ public class Identifica {
 		Nodo aux = Linea.Primero.siguiente;
 		LResultado.InsertaFinal2(aux.dato, null, null);
 		aux = aux.siguiente;
-		String operacion = "";
+		Ambientes (aux.siguiente);
+	}	
 	
-		while(aux != null){
-		
-			if(!aux.dato.equals("=")){
-				if(esNumero(aux.dato) && (aux.siguiente == null) && (operacion.equals(""))){//Para diferenciar de las op
-					LResultado.Ultimo.tipo = "int";
-					LResultado.Ultimo.valor = aux.dato;
-				}
+	static void Ambientes(Nodo aux) throws ScriptException{
+		String operacion = "";
+		System.out.print("siguiente "+aux.dato);
+		if (((esNumero(aux.dato)) && (aux.siguiente == null) && (operacion.equals(""))) || ((esNumero(aux.dato)) && (aux.siguiente.dato.equals("else")) )){//Para diferenciar de las op
+			LResultado.Ultimo.tipo = "int";
+			LResultado.Ultimo.valor = aux.dato;
+		}
 			
-				else if((aux.dato.equals("True")) || (aux.dato.equals("False"))){
-					LResultado.Ultimo.tipo = "bool";
-					LResultado.Ultimo.valor = aux.dato;
-				}
+		else if((aux.dato.equals("True")) || (aux.dato.equals("False"))){
+			LResultado.Ultimo.tipo = "bool";
+			LResultado.Ultimo.valor = aux.dato;
+		}
 			
-				else if (aux.dato.equals("if")) {
-					sentencia_if(aux);
-					break;
-				}
+		else if (aux.dato.equals("if")) {
+			//System.out.println("ifff");
+			sentencia_if(aux);
+			return;
+		}
 			
-				else if (aux.dato.equals("let")) {
-					sentencia_let(aux);
-					break;
-				}
+		else if (aux.dato.equals("let")) {
+			sentencia_let(aux);
+			return;
+		}
 			
-				else if((aux.dato.equals("[")) || (aux.dato.equals("("))){
-					Lista Laux= new Lista();
-					while (aux.siguiente != null){
-						Laux.InsertaFinal(aux.dato);
-						aux = aux.siguiente;
-					}
+		else if((aux.dato.equals("[")) || (aux.dato.equals("("))){
+			Lista Laux= new Lista();
+			while (aux.siguiente != null){
+				if (aux.dato.equals("else")) break;
+				//System.out.print("lala "+aux.dato);
+				Laux.InsertaFinal(aux.dato);
+				aux = aux.siguiente;
+			}
 				
-					tipo = "(";
-					tipoLista = "[";
+			tipo = "(";
+			tipoLista = "[";
 				
-					if (Laux.Primero.dato.equals("[")) {
-						Laux.InsertaFinal("]");
-						LResultado.Ultimo.tipo=VerificaLista(Laux);
-					}
+			if (Laux.Primero.dato.equals("[")) {
+				Laux.InsertaFinal("]");
+				LResultado.Ultimo.tipo=VerificaLista(Laux);
+			}
 				
-					if (Laux.Primero.dato.equals("(")) {
-						Laux.InsertaFinal(")");
-						LResultado.Ultimo.tipo=VerificaTupla(Laux);
+			if (Laux.Primero.dato.equals("(")) {
+				Laux.InsertaFinal(")");
+				LResultado.Ultimo.tipo=VerificaTupla(Laux);
+			}
+					
+			Nodo aux1=Laux.Primero;
+			String Valores = "";
+			while(aux1 != null){
+				if(esNumero(aux1.dato) || (aux1.dato.equals("[")) || (aux1.dato.equals("]")) || (aux1.dato.equals("(")) || (aux1.dato.equals(")")) || (aux1.dato.equals(","))){
+					Valores += aux1.dato;
+				}
+				
+				else if ((aux1.dato.equals("True")) || (aux1.dato.equals("False"))){
+					Valores += aux1.dato;
+				}
+				
+				else{
+					Valores += RevisaTabla(aux1.dato);
+				}
+				
+				aux1 = aux1.siguiente;
+			}
+			LResultado.Ultimo.valor=Valores;
+		}
+			
+		else{
+			Nodo apuntador = aux;
+			while (apuntador != null){
+				if(esNumero(apuntador.dato))operacion += apuntador.dato;
+				
+				else if((apuntador.dato.equals("+"))||(apuntador.dato.equals("-"))||(apuntador.dato.equals("*"))||(apuntador.dato.equals("/"))||(apuntador.dato.equals("("))||(apuntador.dato.equals(")"))){
+					operacion += apuntador.dato;
+				}
+				
+				else{
+					Nodo puntero = LResultado.Ultimo;
+					
+					while(!puntero.dato.equals(apuntador.dato)){
+						puntero = puntero.anterior;
 					}
 					
-					Nodo aux1=Laux.Primero;
-					String Valores = "";
-					while(aux1 != null){
-						if(esNumero(aux1.dato) || (aux1.dato.equals("[")) || (aux1.dato.equals("]")) || (aux1.dato.equals("(")) || (aux1.dato.equals(")")) || (aux1.dato.equals(","))){
-							Valores += aux1.dato;
-						}
-						else if ((aux1.dato.equals("True")) || (aux1.dato.equals("False"))){
-							Valores += aux1.dato;
-						}
-						else{
-							Valores += RevisaTabla(aux1.dato);
-						}
-						aux1 = aux1.siguiente;
-					}
-					LResultado.Ultimo.valor=Valores;
+					operacion+=puntero.valor;
 				}
-			
-				else{
-					if(esNumero(aux.dato))operacion += aux.dato;
-					else if((aux.dato.equals("+"))||(aux.dato.equals("-"))||(aux.dato.equals("*"))||(aux.dato.equals("/"))||(aux.dato.equals("("))||(aux.dato.equals(")"))){
-						operacion += aux.dato;
-					}
-					else{
-						Nodo puntero = LResultado.Ultimo;
-						while(!puntero.dato.equals(aux.dato)){
-							puntero = puntero.anterior;
-						}
-						operacion+=puntero.valor;
-					}
-				}			
+			apuntador = apuntador.siguiente;
 			}
-			aux=aux.siguiente;
-		}
-	
+		}			
+		
 		if(!operacion.equals("")){
 			LResultado.Ultimo.valor = Operar(operacion);
 			LResultado.Ultimo.tipo = "int";
@@ -101,16 +113,18 @@ public class Identifica {
 		//LResultado.Imprimir();
 	}
 	
+
 	
 	
 	
 	
-	
-	static void sentencia_if (Nodo act){
+	static void sentencia_if (Nodo act) throws ScriptException{
+		//System.out.println(act.dato);
 		
 		boolean es_if = false;
 		
 		while (!act.dato.equals("then")){
+			//System.out.println("hhhh");
 			if (act.dato.equals("orelse")) {
 				and_or.InsertaBool("orelse", true);
 			}
@@ -133,22 +147,12 @@ public class Identifica {
 			act = act.siguiente;
 		}
 		
-		//and_or.ImprimirBool();
+		and_or.ImprimirBool();
 		//System.out.println(Evaluar());
 		
 		if (Evaluar()) {
-			if(esNumero(act.siguiente.dato)){//Para diferenciar de las op
-				LResultado.Ultimo.tipo = "int";
-				LResultado.Ultimo.valor = act.siguiente.dato;
-			}
-			if((act.siguiente.dato.equals("True"))||(act.siguiente.dato.equals("False"))){
-				LResultado.Ultimo.tipo = "boolean";
-				LResultado.Ultimo.valor = act.siguiente.dato;
-			}
-			if (act.siguiente.dato.equals("if")) {
-				//System.out.println(act.dato);
-				sentencia_if(act.siguiente);
-			}
+			System.out.println("ooo0" + act.siguiente.siguiente.dato);
+			Ambientes(act.siguiente);
 		}
 		
 		else {
@@ -157,20 +161,7 @@ public class Identifica {
 				if (act.dato.equals("else")) es_if = false;
 				act = act.siguiente;
 			}
-			//if (!){
-				if(esNumero(act.siguiente.dato)){//Para diferenciar de las op
-					LResultado.Ultimo.tipo = "int";
-					LResultado.Ultimo.valor = act.siguiente.dato;
-				}
-				if((act.siguiente.dato.equals("True"))||(act.siguiente.dato.equals("False"))){
-					LResultado.Ultimo.tipo = "boolean";
-					LResultado.Ultimo.valor = act.siguiente.dato;
-				}
-				if (act.siguiente.dato.equals("if")) {
-					
-					sentencia_if(act.siguiente);
-				}
-			//}
+			Ambientes(act.siguiente);
 			
 		}
 	}	
@@ -317,7 +308,7 @@ public class Identifica {
 		Nodo aux = L.Primero.siguiente;
 		
 		if (aux.siguiente == null){
-			tipoLista = "[]";
+			tipoLista = "'a list";
 		}
 		
 		else if (esNumero(aux.dato)){

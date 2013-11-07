@@ -142,21 +142,34 @@ public class LeerArchivo extends JFrame implements ActionListener {
 			boolean sub_let = false;
 			
 			while (Aux_expresion != null)  {
+				//System.out.println(Aux_expresion.dato + " " + es_let);
+				
+				// Para manejar el let
+				if (Aux_expresion.dato.equals("let")) {
+					if (!es_let) es_let = true;
+					else sub_let = true;
+				}
+				
+				if (Aux_expresion.dato.equals("end")) 
+					if (es_let && !sub_let) es_let = false;
+					else sub_let = false;
+				//
+				
+				
 				if ((Aux_expresion.dato.equals("val") || Aux_expresion.siguiente == null) && !es_let){
+					
+					//System.out.println(Aux_expresion.siguiente.dato);
 					
 					if (Aux_expresion.siguiente == null) L_aux.InsertaFinal(Aux_expresion.dato);
 				    					    		
 				    if (L_aux.Primero != null){
 				    	if (L_aux.Ultimo.dato.equals(";") || L_aux.Ultimo.dato.equals(".")) L_aux.EliminarFinal();
+				    	//L_aux.ImprimirS();
 				    	Identifica.Inserta(L_aux);
 				    }
 				    
 				    L_aux.Primero = null;
 				
-				}
-				
-				if (Aux_expresion.equals("let")) {
-					es_let = true;
 				}
 				
 				
