@@ -9,30 +9,50 @@ public class Identifica {
 	static Lista and_or = new Lista();
 	static String tipo = "(";
 	static String tipoLista = "[";
-
+	static Lista L_aux = new Lista ();
+	static boolean es_let, let = false;
+	
 	static void Inserta(Lista Linea) throws ScriptException{
 	
 		Nodo aux = Linea.Primero.siguiente;
-		LResultado.InsertaFinal2(aux.dato, null, null);
+		if (es_let){
+			L_aux.InsertaFinal2(aux.dato, null, null);
+		}
+		else {
+			LResultado.InsertaFinal2(aux.dato, null, null);
+		}
 		aux = aux.siguiente;
 		Ambientes (aux.siguiente);
 	}	
 	
 	static void Ambientes(Nodo aux) throws ScriptException{
 		String operacion = "";
-		System.out.print("siguiente "+aux.dato);
-		if (((esNumero(aux.dato)) && (aux.siguiente == null) && (operacion.equals(""))) || ((esNumero(aux.dato)) && (aux.siguiente.dato.equals("else")) )){//Para diferenciar de las op
-			LResultado.Ultimo.tipo = "int";
-			LResultado.Ultimo.valor = aux.dato;
+		
+		if (((esNumero(aux.dato)) && (aux.siguiente == null) && (operacion.equals(""))) || ((esNumero(aux.dato))&&(aux.siguiente.dato.equals("else")))) {//Para diferenciar de las op
+			if (es_let){
+				L_aux.Ultimo.tipo = "int";
+				L_aux.Ultimo.valor = aux.dato;
+			}
+			else{
+				LResultado.Ultimo.tipo = "int";
+				LResultado.Ultimo.valor = aux.dato;
+			}
+			
 		}
 			
 		else if((aux.dato.equals("True")) || (aux.dato.equals("False"))){
-			LResultado.Ultimo.tipo = "bool";
-			LResultado.Ultimo.valor = aux.dato;
+			
+			if (es_let){
+				L_aux.Ultimo.tipo = "bool";
+				L_aux.Ultimo.valor = aux.dato;
+			}
+			else{
+				LResultado.Ultimo.tipo = "bool";
+				LResultado.Ultimo.valor = aux.dato;
+			}
 		}
 			
 		else if (aux.dato.equals("if")) {
-			//System.out.println("ifff");
 			sentencia_if(aux);
 			return;
 		}
@@ -56,12 +76,23 @@ public class Identifica {
 				
 			if (Laux.Primero.dato.equals("[")) {
 				Laux.InsertaFinal("]");
-				LResultado.Ultimo.tipo=VerificaLista(Laux);
+				if (es_let){
+					L_aux.Ultimo.tipo = VerificaLista (Laux);
+				}
+				else{
+					LResultado.Ultimo.tipo=VerificaLista(Laux);
+				}
+				
 			}
 				
 			if (Laux.Primero.dato.equals("(")) {
 				Laux.InsertaFinal(")");
-				LResultado.Ultimo.tipo=VerificaTupla(Laux);
+				if (es_let){
+					L_aux.Ultimo.tipo = VerificaTupla (Laux);
+				}
+				else{
+					LResultado.Ultimo.tipo=VerificaTupla(Laux);
+				}
 			}
 					
 			Nodo aux1=Laux.Primero;
@@ -81,7 +112,12 @@ public class Identifica {
 				
 				aux1 = aux1.siguiente;
 			}
-			LResultado.Ultimo.valor=Valores;
+			if (es_let){
+				L_aux.Ultimo.valor = Valores;
+			}
+			else{
+				LResultado.Ultimo.valor=Valores;
+			}
 		}
 			
 		else{
@@ -94,22 +130,35 @@ public class Identifica {
 				}
 				
 				else{
-					Nodo puntero = LResultado.Ultimo;
+					/*Nodo puntero = LResultado.Ultimo;
 					
 					while(!puntero.dato.equals(apuntador.dato)){
 						puntero = puntero.anterior;
 					}
 					
-					operacion+=puntero.valor;
+					operacion+=puntero.valor; */
+					operacion += RevisaTabla(apuntador.dato);
 				}
 			apuntador = apuntador.siguiente;
 			}
 		}			
 		
 		if(!operacion.equals("")){
-			LResultado.Ultimo.valor = Operar(operacion);
-			LResultado.Ultimo.tipo = "int";
+			if (es_let){
+				L_aux.Ultimo.valor = Operar(operacion);
+				L_aux.Ultimo.tipo = "int";
+			}
+			else{
+				LResultado.Ultimo.valor = Operar(operacion);
+				LResultado.Ultimo.tipo = "int";
+			}
 		}
+		
+		if (es_let) {
+			es_let = false;
+			let = true;
+		}
+		
 		//LResultado.Imprimir();
 	}
 	
@@ -147,11 +196,11 @@ public class Identifica {
 			act = act.siguiente;
 		}
 		
-		and_or.ImprimirBool();
+		//and_or.ImprimirBool();
 		//System.out.println(Evaluar());
 		
 		if (Evaluar()) {
-			System.out.println("ooo0" + act.siguiente.siguiente.dato);
+			//System.out.println("ooo0" + act.siguiente.siguiente.dato);
 			Ambientes(act.siguiente);
 		}
 		
@@ -166,8 +215,26 @@ public class Identifica {
 		}
 	}	
 
-	static void sentencia_let (Nodo act) {
+	static void sentencia_let (Nodo act) throws ScriptException {
+		es_let = true;
+		Lista L_auxLet = new Lista();
+		Nodo aux_let = act.siguiente;
+		while (!aux_let.dato.equals("in")) {
+			L_auxLet.InsertaFinal(aux_let.dato);
+			aux_let = aux_let.siguiente;
+		}
+		Inserta(L_auxLet);
 		
+		//System.out.println(aux_let.dato);
+		aux_let = aux_let.siguiente;
+		Lista aux = new Lista();
+		
+		while (!aux_let.dato.equals("end")) {
+			aux.InsertaFinal(aux_let.dato);
+			aux_let = aux_let.siguiente;
+		}
+		
+		Ambientes(aux.Primero);
 	}
 
 	static boolean Evaluar () {
@@ -225,7 +292,7 @@ public class Identifica {
 		resultado = Operador.eval(op).toString();
 		resultadoAux = Float.parseFloat(resultado);
 		resulInt = (int) resultadoAux;
-		System.out.println(resulInt);
+		//System.out.println(resulInt);
 		resultado = resulInt+"";
 		
 		return resultado;
@@ -354,9 +421,21 @@ public class Identifica {
 	//Busca en la tabla dinamica el valor de un elemento
 	static String RevisaTabla(String elemento){
 		if(!elemento.equals("(")&&!elemento.equals(",")&&!elemento.equals(")")&&!elemento.equals("[")&&!elemento.equals("]")&&!elemento.equals("True")&&!elemento.equals("False")){
-			Nodo puntero = LResultado.Ultimo;
-			while(!puntero.dato.equals(elemento)){
+			Nodo puntero;
+			System.out.println (let);
+			if (let) puntero = L_aux.Ultimo;
+			else puntero = LResultado.Ultimo;
+			
+			while((puntero != null) && (!puntero.dato.equals(elemento))){
 				puntero = puntero.anterior;
+			}
+			
+			if (puntero == null && let) {
+				puntero = LResultado.Ultimo;
+				while(!puntero.dato.equals(elemento)){
+					puntero = puntero.anterior;
+				}
+				
 			}
 			return puntero.valor;
 		}

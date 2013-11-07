@@ -140,8 +140,11 @@ public class LeerArchivo extends JFrame implements ActionListener {
 			Lista L_aux = new Lista();
 			boolean es_let = false;
 			boolean sub_let = false;
+			//Identifica.es_let = false;
+			
 			
 			while (Aux_expresion != null)  {
+				Identifica.let = false;
 				//System.out.println(Aux_expresion.dato + " " + es_let);
 				
 				// Para manejar el let
