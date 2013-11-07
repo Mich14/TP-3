@@ -14,18 +14,18 @@ public class Identifica {
 	
 		Nodo aux = Linea.Primero.siguiente;
 		LResultado.InsertaFinal2(aux.dato, null, null);
-		aux=aux.siguiente;
-		String operacion="";
+		aux = aux.siguiente;
+		String operacion = "";
 	
-		while(aux!=null){
+		while(aux != null){
 		
 			if(!aux.dato.equals("=")){
-				if(esNumero(aux.dato)&&(aux.siguiente==null)&&(operacion.equals(""))){//Para diferenciar de las op
+				if(esNumero(aux.dato) && (aux.siguiente == null) && (operacion.equals(""))){//Para diferenciar de las op
 					LResultado.Ultimo.tipo = "int";
 					LResultado.Ultimo.valor = aux.dato;
 				}
 			
-				else if((aux.dato.equals("True"))||(aux.dato.equals("False"))){
+				else if((aux.dato.equals("True")) || (aux.dato.equals("False"))){
 					LResultado.Ultimo.tipo = "bool";
 					LResultado.Ultimo.valor = aux.dato;
 				}
@@ -44,7 +44,7 @@ public class Identifica {
 					Lista Laux= new Lista();
 					while (aux.siguiente != null){
 						Laux.InsertaFinal(aux.dato);
-						aux=aux.siguiente;
+						aux = aux.siguiente;
 					}
 				
 					tipo = "(";
@@ -61,24 +61,24 @@ public class Identifica {
 					}
 					
 					Nodo aux1=Laux.Primero;
-					String Valores="";
+					String Valores = "";
 					while(aux1 != null){
-						if(esNumero(aux1.dato)||(aux1.dato.equals("["))||(aux1.dato.equals("]"))||(aux1.dato.equals("("))||(aux1.dato.equals(")")) || (aux1.dato.equals(","))){
-							Valores+=aux1.dato;
+						if(esNumero(aux1.dato) || (aux1.dato.equals("[")) || (aux1.dato.equals("]")) || (aux1.dato.equals("(")) || (aux1.dato.equals(")")) || (aux1.dato.equals(","))){
+							Valores += aux1.dato;
 						}
-						else if ((aux1.dato.equals("True"))||(aux1.dato.equals("False"))){
-							Valores+=aux1.dato;
+						else if ((aux1.dato.equals("True")) || (aux1.dato.equals("False"))){
+							Valores += aux1.dato;
 						}
 						else{
 							Valores += RevisaTabla(aux1.dato);
 						}
-						aux1=aux1.siguiente;
+						aux1 = aux1.siguiente;
 					}
 					LResultado.Ultimo.valor=Valores;
 				}
 			
 				else{
-					if(esNumero(aux.dato))operacion+=aux.dato;
+					if(esNumero(aux.dato))operacion += aux.dato;
 					else if((aux.dato.equals("+"))||(aux.dato.equals("-"))||(aux.dato.equals("*"))||(aux.dato.equals("/"))||(aux.dato.equals("("))||(aux.dato.equals(")"))){
 						operacion += aux.dato;
 					}
@@ -98,10 +98,18 @@ public class Identifica {
 			LResultado.Ultimo.valor = Operar(operacion);
 			LResultado.Ultimo.tipo = "int";
 		}
-		LResultado.Imprimir();
+		//LResultado.Imprimir();
 	}
 	
+	
+	
+	
+	
+	
 	static void sentencia_if (Nodo act){
+		
+		boolean es_if = false;
+		
 		while (!act.dato.equals("then")){
 			if (act.dato.equals("orelse")) {
 				and_or.InsertaBool("orelse", true);
@@ -138,24 +146,32 @@ public class Identifica {
 				LResultado.Ultimo.valor = act.siguiente.dato;
 			}
 			if (act.siguiente.dato.equals("if")) {
-				sentencia_if(act);
+				//System.out.println(act.dato);
+				sentencia_if(act.siguiente);
 			}
 		}
 		
 		else {
-			if (act.siguiente.siguiente.dato.equals("else")){
-				if(esNumero(act.siguiente.siguiente.siguiente.dato)){//Para diferenciar de las op
+			while (!act.dato.equals("else") || (es_if)){
+				if (act.dato.equals("if")) es_if = true;
+				if (act.dato.equals("else")) es_if = false;
+				act = act.siguiente;
+			}
+			//if (!){
+				if(esNumero(act.siguiente.dato)){//Para diferenciar de las op
 					LResultado.Ultimo.tipo = "int";
-					LResultado.Ultimo.valor = act.siguiente.siguiente.siguiente.dato;
+					LResultado.Ultimo.valor = act.siguiente.dato;
 				}
-				if((act.siguiente.siguiente.siguiente.dato.equals("True"))||(act.siguiente.siguiente.siguiente.dato.equals("False"))){
+				if((act.siguiente.dato.equals("True"))||(act.siguiente.dato.equals("False"))){
 					LResultado.Ultimo.tipo = "boolean";
-					LResultado.Ultimo.valor = act.siguiente.siguiente.siguiente.dato;
+					LResultado.Ultimo.valor = act.siguiente.dato;
 				}
 				if (act.siguiente.dato.equals("if")) {
-					sentencia_if(act);
+					
+					sentencia_if(act.siguiente);
 				}
-			}
+			//}
+			
 		}
 	}	
 
@@ -187,6 +203,7 @@ public class Identifica {
 			}
 		}
 		//System.out.println ("SalI");
+		and_or.Primero = null;
 		return resultado;
 	}
 

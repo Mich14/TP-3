@@ -33,6 +33,25 @@ public class Lista {
 			Ultimo=Ultimo.siguiente;
 		}
 	}
+	
+	void EliminarFinal(){
+		if(ListaVacia()) System.out.println("NO hay elementos esta vacia");
+		else{
+			if(Primero.siguiente==null){
+				Primero = Ultimo = null;
+			}
+			else{
+				Nodo aux = Primero;
+				while(aux.siguiente.siguiente != null){
+					aux = aux.siguiente;
+				}
+				Ultimo = aux;
+				aux.siguiente.anterior = null;
+				aux.siguiente = null;
+			}
+		}
+	}
+
 			
 			
 	// se encarga de insertar al final de la lista //
