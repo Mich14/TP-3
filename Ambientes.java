@@ -45,7 +45,7 @@ public class Ambientes extends JFrame implements ActionListener {
 	//Crea la tabla del ambiente estático
 		Tabla t_estatico = new Tabla();
 		
-		Tabla.filas = new Object [100] [2]; // 10 = contador de variables
+		Tabla.filas = new Object [100] [2]; 
 				
 		int i = 0; // Contador de filas
 		int j = 0; // Contador de columnas
@@ -73,8 +73,6 @@ public class Ambientes extends JFrame implements ActionListener {
 		//Creamos un JscrollPane y se agrega a la tabla 
 		JScrollPane scrollPane = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getViewport().setBackground(new Color (12, 93, 165));
-		//tabla.setAutoResizeMode ( JTable.AUTO_RESIZE_OFF );
-		//p_estatico.add(scrollPane);
 		
 		//-------------------Fin de caracetristicas de la tabla estatica-----------------------------------------------------\\ 				
 		
@@ -116,9 +114,7 @@ public class Ambientes extends JFrame implements ActionListener {
 		JScrollPane scroll = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.getViewport().setBackground(new Color (12, 93, 165));
 		
-		//tabla2.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 		
-
 	//Creacion de paneles		
 		JPanel p_norte = new JPanel();
 		p_norte.setBackground(Color.gray);

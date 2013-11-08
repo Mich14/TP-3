@@ -6,8 +6,6 @@ class Tabla extends AbstractTableModel {
 	static Object[][] filas;
 	static String[] columnas;
 	
-	//static int x;
-	
 	//Obtiene la cantidad de columna de una tabla
 	public int getColumnCount() {
 		return columnas.length;
