@@ -386,10 +386,12 @@ public class Identifica {
 	//Método que otorga el tipo a als tuplas
 	static String VerificaTupla(Lista L){
 		Nodo ap=L.Primero.siguiente;
-	
+		
+		//Recorre hasta el final de la tupla
 		while(ap!=null){
 			while(!ap.dato.equals(")")){
 				
+				//Verifica si es numero
 				if(esNumero(ap.dato)||(esNumero(RevisaTabla(ap.dato)))){
 					if(ap.siguiente.dato.equals(")")){
 						tipo+="int)";
@@ -399,6 +401,7 @@ public class Identifica {
 					ap=ap.siguiente;
 				}
 				
+				//Verifica si es lista
 				else if(ap.dato.equals("[")){
 					Lista Laux=new Lista();
 					Nodo apt = ap;
@@ -408,11 +411,11 @@ public class Identifica {
 					}
 				
 					Laux.InsertaFinal("]");
-					tipo+=VerificaLista(Laux);
+					tipo+=VerificaLista(Laux);   //Llama a verifica lista
 					ap=apt.siguiente;
 					if(ap.siguiente != null) tipo+="*";
 				}
-				
+				//Verifica si es boolean
 				else if(ap.dato.equals("True")||ap.dato.equals("False")||(RevisaTabla(ap.dato).equals("True"))||(RevisaTabla(ap.dato).equals("False"))){
 					if(ap.siguiente.dato.equals(")")){
 						tipo+="bool)";
@@ -422,6 +425,7 @@ public class Identifica {
 					ap=ap.siguiente;
 				}
 				
+				//Verifica si es tupla
 				else if(ap.dato.equals("(")){
 					Lista L1 = new Lista();
 					Nodo apuntador=ap;
@@ -432,12 +436,13 @@ public class Identifica {
 					
 					L1.InsertaFinal(")");
 					tipo += "(";
-					tipo=VerificaTupla(L1);
+					tipo=VerificaTupla(L1); //Llama a verifica tupla
 					ap=apuntador.siguiente;
 					if((ap.siguiente != null) && (!ap.siguiente.dato.equals(")")))tipo+="*";
 				}
 			
-				else{
+				else{	
+					//En caso de que sea una variable se llama a verifica a tipo que retorna el tipo de la variable
 					tipo += VerificaTipo (ap.dato);
 					ap = ap.siguiente;
 					if((ap.siguiente != null) && (!ap.siguiente.dato.equals(")")))tipo+="*";
@@ -459,19 +464,23 @@ public class Identifica {
 	static String VerificaLista (Lista L){
 		Nodo aux = L.Primero.siguiente;
 		
+		//Verifica si una lista esta vacia
 		if (aux.siguiente == null){
 			tipoLista = "'a list";
 		}
 		
+		//Verifica si es numero
 		else if (esNumero(aux.dato)){
 			tipoLista = "int list "; 
 		}
 		
+		//Verifica si es boolean
 		else if ((aux.dato.equals("True")) || (aux.dato.equals("False"))){
 			tipoLista = "bool list ";
 			
 		}
 		
+		//Verifica si es tupla
 		else if (aux.dato.equals("(")){
 			Lista Tupla = new Lista ();
 			while (!aux.dato.equals(")")){
@@ -479,10 +488,11 @@ public class Identifica {
 				aux = aux.siguiente;
 			}
 			Tupla.InsertaFinal(")");
-			tipoLista = VerificaTupla (Tupla);
+			tipoLista = VerificaTupla (Tupla); //Se llama a verifica tupla
 			tipoLista += "list ";
 		}
 		
+		//Verifica si es lista
 		else if (aux.dato.equals("[")){
 			Lista Lista = new Lista ();
 			while (!aux.dato.equals("]") ){
@@ -490,11 +500,12 @@ public class Identifica {
 				aux = aux.siguiente;
 			}
 				Lista.InsertaFinal("]");
-				tipoLista = VerificaLista (Lista);
+				tipoLista = VerificaLista (Lista); //Se llama a verficaLista
 				tipoLista += "list ";
 		}
 		
 		else{
+			//En caso de que sea una variable se llama a verifica a tipo que retorna el tipo de la variable			
 			tipoLista = VerificaTipo (aux.dato);
 			tipoLista += "list ";
 		}
