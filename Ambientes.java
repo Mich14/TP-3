@@ -1,3 +1,4 @@
+//Importa librerias para uso de la interfaz grafica
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -15,19 +16,21 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
 
+//Creacion de la clase ambientes
 public class Ambientes extends JFrame implements ActionListener {
 
 	JButton b_volver = new JButton("Volver");
 	
 	public Ambientes () {
 		
-	
+	//Creacion de la ventana y caracteristicas
 		Container Ventana = getContentPane(); 
 		setBounds(200, 200, 1000, 500);
 		setTitle("Manejador de tablas de símbolos");
 		//setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+	//Creacion de paneles
 		JPanel p_principal = new JPanel();
 		p_principal.setLayout(new BorderLayout());
 		//p_principal.setBackground(Color.white);
@@ -39,7 +42,7 @@ public class Ambientes extends JFrame implements ActionListener {
 		JPanel p_estatico = new JPanel();
 		p_estatico.setBackground(new Color(139,28,98));
 		
-		//Crea la fila de la tabla
+	//Crea la tabla del ambiente estático
 		Tabla t_estatico = new Tabla();
 		
 		Tabla.filas = new Object [100] [2]; // 10 = contador de variables
@@ -47,10 +50,10 @@ public class Ambientes extends JFrame implements ActionListener {
 		int i = 0; // Contador de filas
 		int j = 0; // Contador de columnas
 		Nodo actual = Identifica.LResultado.Primero;
-						
-		while(actual != null){ // Ciclo para llenar la matriz con los datos de los productos
-					// Insercción de datos	
-			
+		
+	// Ciclo para llenar la matriz con los datos y los tipos		
+		while(actual != null){ 
+					
 			Tabla.filas [i][j] = actual.dato; 
 			j++;
 			Tabla.filas [i][j] = actual.tipo;
@@ -73,12 +76,12 @@ public class Ambientes extends JFrame implements ActionListener {
 		//tabla.setAutoResizeMode ( JTable.AUTO_RESIZE_OFF );
 		//p_estatico.add(scrollPane);
 		
-		//------------------------------------------------------------------------\\ 				
+		//-------------------Fin de caracetristicas de la tabla estatica-----------------------------------------------------\\ 				
 		
 		JPanel p_dinamico = new JPanel();
 		p_dinamico.setBackground(new Color(139,28,98));
 		
-		//creamos el modelo de tabla con los datos anteriores 
+		//Creamos la tabla del ambiente dinamico 
 		Tabla1 t_dinamico = new Tabla1(); 
 		
 		Tabla1.filas = new Object [100] [2]; // 10 = contador de variables
@@ -88,10 +91,9 @@ public class Ambientes extends JFrame implements ActionListener {
 		Nodo act = Identifica.LResultado.Primero;
 			
 	
-		
-		while(act != null){ // Ciclo para llenar la matriz con los datos de los productos
-					// Insercción de datos	
-			
+		// Ciclo para llenar la matriz con los datos y los valores
+		while(act != null){ 
+					
 			Tabla1.filas [k][l] = act.dato; 
 			l++;
 			Tabla1.filas [k][l] = act.valor;
@@ -105,17 +107,19 @@ public class Ambientes extends JFrame implements ActionListener {
 		//Se crean las columnas de la tabla
 		Tabla1.columnas = new String [] {"Identificador", "Valor"};
 				
-				//se crea la tabla con el defaultablemodel 
+		//se crea la tabla con el defaultablemodel 
 		JTable tabla2 = new JTable(t_dinamico);
 		tabla2.setForeground(Color.white);
 		tabla2.setBackground(Color.gray);
 						
-				//Creamos un JscrollPane y se agrega a la tabla 
+		//Creamos un JscrollPane y se agrega a la tabla 
 		JScrollPane scroll = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.getViewport().setBackground(new Color (12, 93, 165));
 		
 		//tabla2.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 		
+
+	//Creacion de paneles		
 		JPanel p_norte = new JPanel();
 		p_norte.setBackground(Color.gray);
 		p_norte.setLayout(new GridLayout(1,2));
@@ -131,11 +135,13 @@ public class Ambientes extends JFrame implements ActionListener {
 		JPanel p_sur = new JPanel();
 		p_sur.setBackground(new Color(139,28,98));
 		
+	//Caracteristicas del boton
 		b_volver.addActionListener(this);
 		b_volver.setBackground(new Color (139, 28, 98));
 		b_volver.setForeground(Color.white);
 		b_volver.setFont(new java.awt.Font("Segoe Print", Font.BOLD, 15));
 		
+	//Se agregan los componentes a la ventana
 		Ventana.add(p_principal);
 		p_principal.add(p_central, BorderLayout.CENTER);
 		
@@ -159,6 +165,7 @@ public class Ambientes extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
+	//Para efectuar un evento sobre un boton
 	public void actionPerformed(ActionEvent e) {
 	
 		if (e.getSource() == b_volver) {

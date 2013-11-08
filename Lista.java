@@ -1,17 +1,19 @@
+// Crea la clase Lista
 public class Lista {
 	
-	// Crea la clase Lista
-	Nodo Primero; // creaci�n de Nodos 
-	Nodo Ultimo;
+	Nodo Primero; // Creacion de nodo primero 
+	Nodo Ultimo;  //Creacion de nodo ultimo
 	
-	//Esta es una funci�n boolean que se encargara ir vaciando la Lista//
+	//Verifica si una lista posee elementos
 	boolean ListaVacia(){ 
 		if (Primero==null){
 			return true;
 		}
 		else{return false;}
 	}
-			
+	
+	//Inserta el dato, con su respectivo valor y tipo al final de una lista 
+	//Crea una lista doblemente enlazada		
 	void InsertaFinal2(String Dato, String Tipo, String Valor) {
 		Nodo Nuevo = new Nodo(Dato, Tipo, Valor);
 		if (ListaVacia()){ Primero = Ultimo = Nuevo;}
@@ -22,6 +24,8 @@ public class Lista {
 		}
 	}
 
+	//Metodo que inserta un dato y un boolean utilizado para realizar el if
+	//Crea una lista doblemente enlazada
 	void InsertaBool(String Dato, Boolean Cumple) {	
 		if (ListaVacia()){
 			Primero = Ultimo = new Nodo(Dato, Cumple);}
@@ -34,6 +38,7 @@ public class Lista {
 		}
 	}
 	
+	//Metodo que elimina el ultimo elemento de una lista
 	void EliminarFinal(){
 		if(ListaVacia()) System.out.println("NO hay elementos esta vacia");
 		else{
@@ -54,7 +59,7 @@ public class Lista {
 
 			
 			
-	// se encarga de insertar al final de la lista //
+	// Se encarga de insertar un dato al final de la lista
 	void InsertaFinal(String Dato) {
 		if (ListaVacia()){
 			Primero = Ultimo = new Nodo(Dato);
@@ -66,6 +71,7 @@ public class Lista {
 		}
 	}
 	
+	//Metodo que imprime una lista resultado con el dato el valor y el tipo
 	void Imprimir () {
 		if (ListaVacia()){
 			System.out.println("No puede imprimir nada por que la lista no tiene nada ");
@@ -79,6 +85,7 @@ public class Lista {
 		}
 	}
 	
+	//Metodo que imprime los datos de una lista
 	void ImprimirS () {
 		if (ListaVacia()){
 			System.out.println("No puede imprimir nada por que la lista no tiene nada ");
@@ -93,6 +100,7 @@ public class Lista {
 		}
 	}
 	
+	//Metodo que imprime el boolean de una lista
 	void ImprimirBool () {
 		if (ListaVacia()){
 			System.out.println("No puede imprimir nada por que la lista no tiene nada ");
