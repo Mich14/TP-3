@@ -68,9 +68,9 @@ public class Ambientes extends JFrame implements ActionListener {
 		tabla.setBackground(Color.gray);
 		
 		//Creamos un JscrollPane y se agrega a la tabla 
-		JScrollPane scrollPane = new JScrollPane(tabla);
+		JScrollPane scrollPane = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getViewport().setBackground(new Color (12, 93, 165));
-		 
+		//tabla.setAutoResizeMode ( JTable.AUTO_RESIZE_OFF );
 		//p_estatico.add(scrollPane);
 		
 		//------------------------------------------------------------------------\\ 				
@@ -111,8 +111,10 @@ public class Ambientes extends JFrame implements ActionListener {
 		tabla2.setBackground(Color.gray);
 						
 				//Creamos un JscrollPane y se agrega a la tabla 
-		JScrollPane scroll = new JScrollPane(tabla2);
+		JScrollPane scroll = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.getViewport().setBackground(new Color (12, 93, 165));
+		
+		//tabla2.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 		
 		JPanel p_norte = new JPanel();
 		p_norte.setBackground(Color.gray);

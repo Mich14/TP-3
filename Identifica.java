@@ -122,7 +122,7 @@ public class Identifica {
 			
 		else{
 			Nodo apuntador = aux;
-			while (apuntador != null){
+			while (apuntador != null && !apuntador.dato.equals("else")){
 				if(esNumero(apuntador.dato))operacion += apuntador.dato;
 				
 				else if((apuntador.dato.equals("+"))||(apuntador.dato.equals("-"))||(apuntador.dato.equals("*"))||(apuntador.dato.equals("/"))||(apuntador.dato.equals("("))||(apuntador.dato.equals(")"))){
@@ -130,13 +130,7 @@ public class Identifica {
 				}
 				
 				else{
-					/*Nodo puntero = LResultado.Ultimo;
 					
-					while(!puntero.dato.equals(apuntador.dato)){
-						puntero = puntero.anterior;
-					}
-					
-					operacion+=puntero.valor; */
 					operacion += RevisaTabla(apuntador.dato);
 				}
 			apuntador = apuntador.siguiente;
@@ -162,11 +156,6 @@ public class Identifica {
 		//LResultado.Imprimir();
 	}
 	
-
-	
-	
-	
-	
 	static void sentencia_if (Nodo act) throws ScriptException{
 		//System.out.println(act.dato);
 		
@@ -181,10 +170,82 @@ public class Identifica {
 				and_or.InsertaBool("andalso", true);
 			}
 			if (act.siguiente.siguiente.dato.equals("=")){
-				if (act.siguiente.siguiente.siguiente.dato.equals(RevisaTabla(act.siguiente.dato))) 
-					and_or.InsertaBool("", true);	
-				else and_or.InsertaBool("", false);
+				if (esNumero(act.siguiente.siguiente.siguiente.dato)){
+					if (act.siguiente.siguiente.siguiente.dato.equals(RevisaTabla(act.siguiente.dato))) 
+						and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+				}
+				else {
+					if (RevisaTabla(act.siguiente.siguiente.siguiente.dato).equals(RevisaTabla(act.siguiente.dato))) 
+						and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+				}
 			}
+			
+			if (act.siguiente.siguiente.dato.equals("<")){
+				int x = 0;
+				if (act.siguiente.siguiente.siguiente.dato.equals("=")){
+					
+					//System.out.println("<=");
+					
+					if (esNumero(act.siguiente.siguiente.siguiente.siguiente.dato))
+						x = Integer.parseInt (act.siguiente.siguiente.siguiente.siguiente.dato); 
+					else 
+						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.siguiente.dato));
+					
+					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
+					
+					//System.out.println(y + " " + x);
+					
+					if (y <= x) and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+					
+					act = act.siguiente;
+				}
+				else {
+					if (esNumero(act.siguiente.siguiente.siguiente.dato))
+						x = Integer.parseInt (act.siguiente.siguiente.siguiente.dato); 
+					else 
+						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.dato));
+					
+					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
+					if (y < x) and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+				}
+			}
+			
+			if (act.siguiente.siguiente.dato.equals(">")){
+				int x = 0;
+				if (act.siguiente.siguiente.siguiente.dato.equals("=")){
+					
+					//System.out.println(">=");
+					
+					if (esNumero(act.siguiente.siguiente.siguiente.siguiente.dato))
+						x = Integer.parseInt (act.siguiente.siguiente.siguiente.siguiente.dato); 
+					else 
+						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.siguiente.dato));
+					
+					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
+					
+					//System.out.println(y + " " + x);
+					
+					if (y >= x) and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+					
+					act = act.siguiente;
+				}
+				else {
+					if (esNumero(act.siguiente.siguiente.siguiente.dato))
+						x = Integer.parseInt (act.siguiente.siguiente.siguiente.dato); 
+					else 
+						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.dato));
+					
+					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
+					if (y > x) and_or.InsertaBool("", true);	
+					else and_or.InsertaBool("", false);
+				}
+			}
+			
 			else {
 				if (act.dato.equals("if") || act.dato.equals("andalso") || act.dato.equals("orelse")){
 					if (act.siguiente.siguiente.dato.equals("then") || act.siguiente.siguiente.dato.equals("andalso") || act.siguiente.siguiente.dato.equals("orelse")){
@@ -200,7 +261,7 @@ public class Identifica {
 		//System.out.println(Evaluar());
 		
 		if (Evaluar()) {
-			//System.out.println("ooo0" + act.siguiente.siguiente.dato);
+			//System.out.println(act.siguiente.dato);
 			Ambientes(act.siguiente);
 		}
 		
@@ -237,6 +298,7 @@ public class Identifica {
 		Ambientes(aux.Primero);
 	}
 
+	
 	static boolean Evaluar () {
 		
 		//System.out.println ("EVAL");
@@ -283,6 +345,7 @@ public class Identifica {
 	}
 
 	//Metodo que realiza operaciones a partir de una cadena
+	
 	static String Operar(String op) throws ScriptException{
 		String resultado = "";
 		float resultadoAux;
@@ -417,12 +480,11 @@ public class Identifica {
 		return tipoLista;
 	}
 
-
 	//Busca en la tabla dinamica el valor de un elemento
 	static String RevisaTabla(String elemento){
 		if(!elemento.equals("(")&&!elemento.equals(",")&&!elemento.equals(")")&&!elemento.equals("[")&&!elemento.equals("]")&&!elemento.equals("True")&&!elemento.equals("False")){
 			Nodo puntero;
-			System.out.println (let);
+			//System.out.println (let);
 			if (let) puntero = L_aux.Ultimo;
 			else puntero = LResultado.Ultimo;
 			
@@ -441,7 +503,6 @@ public class Identifica {
 		}
 		return "";
 	}
-
 
 	static String VerificaTipo(String elemento){
 		Nodo aux = LResultado.Ultimo;
