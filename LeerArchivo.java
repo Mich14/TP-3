@@ -18,10 +18,11 @@ import javax.swing.JPanel;
 	
 public class LeerArchivo extends JFrame implements ActionListener {
 	
+	// Parte de la interfaz para facilitar al usuario seleccionar el archivo
 	JButton abrir;
 	  
 	public LeerArchivo() {
-		
+		// INTERFAZ
 		Container ventana = getContentPane();
 		setBounds(500, 200, 600, 100);
 		setTitle("Manejador de tablas de símbolos");
@@ -43,7 +44,6 @@ public class LeerArchivo extends JFrame implements ActionListener {
 	    abrir.setFont(new java.awt.Font("Segoe Print", Font.BOLD, 15));
 		
 	    JLabel L_indicaciones = new JLabel ("    Haga click en seleccionar para elegir el archivo"  );
-		//Titulo.setIcon(new ImageIcon(getClass().getResource("Compras.png")));
 	    L_indicaciones.setForeground(new Color (139, 28, 98));
 	    L_indicaciones.setFont(new java.awt.Font("Segoe Print", Font.BOLD, 20));
 	    
@@ -58,18 +58,16 @@ public class LeerArchivo extends JFrame implements ActionListener {
 	}
 	    
 	public void actionPerformed(ActionEvent evento) {
-		//Lista LGeneral = new Lista();
-		JFileChooser elegir = new JFileChooser();
-		elegir.showOpenDialog(abrir);
 		
-	               
-	    //Si presionamos el boton ABRIR en pathArchivo obtenemos el path del archivo
-	    if (evento.getSource() == abrir) {
+		JFileChooser elegir = new JFileChooser(); // Elige el archivo que se va leer
+		elegir.showOpenDialog(abrir);
+		  
+	      if (evento.getSource() == abrir) {
 	    	if(elegir.getSelectedFile()==null){
 	    		setVisible(false);
 	    	}
 	    	else {
-			    String Ruta = elegir.getSelectedFile().getPath(); //Obtiene path del archivo
+			    String Ruta = elegir.getSelectedFile().getPath(); //Obtiene la ruta del archivo
 			    setVisible(false);
 			    leerArchivo(Ruta); 
 			    new Ambientes();
@@ -78,7 +76,7 @@ public class LeerArchivo extends JFrame implements ActionListener {
 	    
 	}
 	          
-    
+    //
 	
 	//Método para leer archivos
 	public static void leerArchivo  (String ruta) {
@@ -100,12 +98,13 @@ public class LeerArchivo extends JFrame implements ActionListener {
 				String letras = "";
 						
 				archivo = archivo + linea;
-							
+				
+				// se recorre la línea que se acaba de recibir y se separa en tokens
 				for (int i=0; i<linea.length(); i++) {
 									
 					String caracter = Character.toString(linea.charAt(i)); 
 									
-					if (caracter.matches("[0-9]*"))
+					if (caracter.matches("[0-9]*")) // Se une los números para insertarlos en la lista
 						numeros = numeros + caracter;
 								
 					else {
@@ -124,7 +123,8 @@ public class LeerArchivo extends JFrame implements ActionListener {
 							letras = "";
 						}
 					}
-								
+					
+					// Inserta caracteres especiales
 					if (!caracter.matches("[a-z]*") && !caracter.matches("[A-Z]*") && !caracter.matches("[0-9]*") && !caracter.equals(" "))
 						LExpresion.InsertaFinal(caracter);
 				}
@@ -138,14 +138,15 @@ public class LeerArchivo extends JFrame implements ActionListener {
 			
 			Nodo Aux_expresion = LExpresion.Primero;
 			Lista L_aux = new Lista();
+			
+			// Manejo de expresiones de un let con otro
 			boolean es_let = false;
 			boolean sub_let = false;
-			//Identifica.es_let = false;
 			
-			
+			// recorre la lista donde se guardo todo el archivo y lo recorre para separarlo por expresiones
 			while (Aux_expresion != null)  {
 				Identifica.let = false;
-				//System.out.println(Aux_expresion.dato + " " + es_let);
+				
 				
 				// Para manejar el let
 				if (Aux_expresion.dato.equals("let")) {
@@ -156,18 +157,19 @@ public class LeerArchivo extends JFrame implements ActionListener {
 				if (Aux_expresion.dato.equals("end")) 
 					if (es_let && !sub_let) es_let = false;
 					else sub_let = false;
-				//
+				// ------------------------------------------------
 				
 				
 				if ((Aux_expresion.dato.equals("val") || Aux_expresion.siguiente == null) && !es_let){
 					
-					//System.out.println(Aux_expresion.siguiente.dato);
 					
 					if (Aux_expresion.siguiente == null) L_aux.InsertaFinal(Aux_expresion.dato);
 				    					    		
 				    if (L_aux.Primero != null){
+				    	// Si el ultimo de la lisya es ; o . se elimina antes de trabajar con la expresión
 				    	if (L_aux.Ultimo.dato.equals(";") || L_aux.Ultimo.dato.equals(".")) L_aux.EliminarFinal();
-				    	//L_aux.ImprimirS();
+				    	
+				    	// se llama al método insertar, para determinar el valor y el tipo de la expresión
 				    	Identifica.Inserta(L_aux);
 				    }
 				    
@@ -176,7 +178,8 @@ public class LeerArchivo extends JFrame implements ActionListener {
 				}
 				
 				
-				L_aux.InsertaFinal(Aux_expresion.dato);
+				L_aux.InsertaFinal(Aux_expresion.dato); // Se inserta en la lista que contiene la expresión
+				
 				Aux_expresion = Aux_expresion.siguiente;
 			}
 				    

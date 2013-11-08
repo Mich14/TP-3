@@ -27,7 +27,7 @@ public class Ambientes extends JFrame implements ActionListener {
 		Container Ventana = getContentPane(); 
 		setBounds(200, 200, 1000, 500);
 		setTitle("Manejador de tablas de símbolos");
-		//setResizable(false);
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 	//Creacion de paneles
