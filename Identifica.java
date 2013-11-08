@@ -2,33 +2,37 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-
-
 public class Identifica {
-	static Lista LResultado = new Lista();
-	static Lista and_or = new Lista();
-	static String tipo = "(";
-	static String tipoLista = "[";
-	static Lista L_aux = new Lista ();
-	static boolean es_let, let = false;
+	static Lista LResultado = new Lista(); // Lista que guarda el resultado de los ambientes
+	static Lista and_or = new Lista();     // Lista para trabajar el if con or y and
+	static String tipo = "(";              // Para el manejo de tuplas
+	static String tipoLista = "[";		   // Para el manejo de listas
+	static Lista L_aux = new Lista ();	   // lista para trabajar las variables temporales de los let
+	static boolean es_let, let = false;		// Variables de clase para la implemtación del let
 	
+	// Método principal de la clase
+	// Función : Trabajar con las lineas que se leen del archivo y las val
 	static void Inserta(Lista Linea) throws ScriptException{
 	
-		Nodo aux = Linea.Primero.siguiente;
-		if (es_let){
-			L_aux.InsertaFinal2(aux.dato, null, null);
+		Nodo aux = Linea.Primero.siguiente; // Se brinca el val
+		if (es_let){ 										// si se trabaja con una expresión let se inserta en la lista
+			L_aux.InsertaFinal2(aux.dato, null, null);      // especial para el let
 		}
 		else {
-			LResultado.InsertaFinal2(aux.dato, null, null);
+			LResultado.InsertaFinal2(aux.dato, null, null); // si no se inserta en la lista resultado
 		}
 		aux = aux.siguiente;
-		Ambientes (aux.siguiente);
+		Ambientes (aux.siguiente);  // llama al método ambientes que le otorga tipo y valor a las varibles
 	}	
 	
+	// Método encargado de seleccionar el tipo de expresión y otorgar el valor y el tipo a la variable
 	static void Ambientes(Nodo aux) throws ScriptException{
 		String operacion = "";
 		
+		// Cuando se trata de números
 		if (((esNumero(aux.dato)) && (aux.siguiente == null) && (operacion.equals(""))) || ((esNumero(aux.dato))&&(aux.siguiente.dato.equals("else")))) {//Para diferenciar de las op
+			
+			// Caso especial del let
 			if (es_let){
 				L_aux.Ultimo.tipo = "int";
 				L_aux.Ultimo.valor = aux.dato;
@@ -40,8 +44,10 @@ public class Identifica {
 			
 		}
 			
+		// Cuando se trata de booleanos
 		else if((aux.dato.equals("True")) || (aux.dato.equals("False"))){
 			
+			// Caso especial del let
 			if (es_let){
 				L_aux.Ultimo.tipo = "bool";
 				L_aux.Ultimo.valor = aux.dato;
@@ -52,30 +58,35 @@ public class Identifica {
 			}
 		}
 			
+		// Cuando la expresión es un if
 		else if (aux.dato.equals("if")) {
 			sentencia_if(aux);
 			return;
 		}
-			
+		
+		// Cuando la expresión es un let
 		else if (aux.dato.equals("let")) {
 			sentencia_let(aux);
 			return;
 		}
-			
+		
+		// Cuando son tuplas o listas
 		else if((aux.dato.equals("[")) || (aux.dato.equals("("))){
 			Lista Laux= new Lista();
 			while (aux.siguiente != null){
 				if (aux.dato.equals("else")) break;
-				//System.out.print("lala "+aux.dato);
 				Laux.InsertaFinal(aux.dato);
 				aux = aux.siguiente;
 			}
-				
+			
 			tipo = "(";
 			tipoLista = "[";
 				
 			if (Laux.Primero.dato.equals("[")) {
 				Laux.InsertaFinal("]");
+				
+			// Se le otorga el tipo según lo devuelto por los métodos correspondientes	
+				// Caso especial del let
 				if (es_let){
 					L_aux.Ultimo.tipo = VerificaLista (Laux);
 				}
@@ -87,6 +98,8 @@ public class Identifica {
 				
 			if (Laux.Primero.dato.equals("(")) {
 				Laux.InsertaFinal(")");
+			
+				// Caso especial del let
 				if (es_let){
 					L_aux.Ultimo.tipo = VerificaTupla (Laux);
 				}
@@ -94,7 +107,7 @@ public class Identifica {
 					LResultado.Ultimo.tipo=VerificaTupla(Laux);
 				}
 			}
-					
+			// En este fragmento de código se otrogan los valores a las tuplas y listas		
 			Nodo aux1=Laux.Primero;
 			String Valores = "";
 			while(aux1 != null){
@@ -112,6 +125,7 @@ public class Identifica {
 				
 				aux1 = aux1.siguiente;
 			}
+			// Caso especial del let
 			if (es_let){
 				L_aux.Ultimo.valor = Valores;
 			}
@@ -119,9 +133,11 @@ public class Identifica {
 				LResultado.Ultimo.valor=Valores;
 			}
 		}
-			
+			// Este caso es si es una operación
 		else{
 			Nodo apuntador = aux;
+			
+			// Ciclo que uno la operación en un string
 			while (apuntador != null && !apuntador.dato.equals("else")){
 				if(esNumero(apuntador.dato))operacion += apuntador.dato;
 				
@@ -137,7 +153,10 @@ public class Identifica {
 			}
 		}			
 		
+		// Se da el valor y el tipo a la varible
 		if(!operacion.equals("")){
+			
+			// Caso especial del let
 			if (es_let){
 				L_aux.Ultimo.valor = Operar(operacion);
 				L_aux.Ultimo.tipo = "int";
@@ -148,27 +167,32 @@ public class Identifica {
 			}
 		}
 		
+		// Uso de la expresión let, para el manejo de la variables temporales
 		if (es_let) {
 			es_let = false;
 			let = true;
 		}
-		
-		//LResultado.Imprimir();
 	}
-	
+
+	// Método que maneja el uso del if
 	static void sentencia_if (Nodo act) throws ScriptException{
-		//System.out.println(act.dato);
 		
-		boolean es_if = false;
+		boolean es_if = false; // Booleano para el manejo de if dentro de if
 		
+		// Ciclo que recorre la condición y determina si es verdader o no
 		while (!act.dato.equals("then")){
-			//System.out.println("hhhh");
+			
+			// en el caso de haber un or
 			if (act.dato.equals("orelse")) {
 				and_or.InsertaBool("orelse", true);
 			}
+			
+			// en el caso de haber un and
 			if (act.dato.equals("andalso")) {
 				and_or.InsertaBool("andalso", true);
 			}
+			
+			// si es una expresión comparativa
 			if (act.siguiente.siguiente.dato.equals("=")){
 				if (esNumero(act.siguiente.siguiente.siguiente.dato)){
 					if (act.siguiente.siguiente.siguiente.dato.equals(RevisaTabla(act.siguiente.dato))) 
@@ -182,11 +206,10 @@ public class Identifica {
 				}
 			}
 			
+			// Si es la primera expresión es menor, o menor e igual
 			if (act.siguiente.siguiente.dato.equals("<")){
 				int x = 0;
 				if (act.siguiente.siguiente.siguiente.dato.equals("=")){
-					
-					//System.out.println("<=");
 					
 					if (esNumero(act.siguiente.siguiente.siguiente.siguiente.dato))
 						x = Integer.parseInt (act.siguiente.siguiente.siguiente.siguiente.dato); 
@@ -194,8 +217,6 @@ public class Identifica {
 						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.siguiente.dato));
 					
 					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
-					
-					//System.out.println(y + " " + x);
 					
 					if (y <= x) and_or.InsertaBool("", true);	
 					else and_or.InsertaBool("", false);
@@ -214,11 +235,10 @@ public class Identifica {
 				}
 			}
 			
+			// si la priemra expresión es mayor, o mayor e igual
 			if (act.siguiente.siguiente.dato.equals(">")){
 				int x = 0;
 				if (act.siguiente.siguiente.siguiente.dato.equals("=")){
-					
-					//System.out.println(">=");
 					
 					if (esNumero(act.siguiente.siguiente.siguiente.siguiente.dato))
 						x = Integer.parseInt (act.siguiente.siguiente.siguiente.siguiente.dato); 
@@ -226,8 +246,6 @@ public class Identifica {
 						x = Integer.parseInt (RevisaTabla(act.siguiente.siguiente.siguiente.siguiente.dato));
 					
 					int y = Integer.parseInt (RevisaTabla(act.siguiente.dato));
-					
-					//System.out.println(y + " " + x);
 					
 					if (y >= x) and_or.InsertaBool("", true);	
 					else and_or.InsertaBool("", false);
@@ -246,6 +264,7 @@ public class Identifica {
 				}
 			}
 			
+			// si es solamente un booleano el que se desea considerar
 			else {
 				if (act.dato.equals("if") || act.dato.equals("andalso") || act.dato.equals("orelse")){
 					if (act.siguiente.siguiente.dato.equals("then") || act.siguiente.siguiente.dato.equals("andalso") || act.siguiente.siguiente.dato.equals("orelse")){
@@ -257,15 +276,12 @@ public class Identifica {
 			act = act.siguiente;
 		}
 		
-		//and_or.ImprimirBool();
-		//System.out.println(Evaluar());
+		// Si la condición es verdadera 
+		if (Evaluar()) Ambientes(act.siguiente);
 		
-		if (Evaluar()) {
-			//System.out.println(act.siguiente.dato);
-			Ambientes(act.siguiente);
-		}
-		
+		// Si la expresión es falsa
 		else {
+			// While que controla si hay un if dentro de un if
 			while (!act.dato.equals("else") || (es_if)){
 				if (act.dato.equals("if")) es_if = true;
 				if (act.dato.equals("else")) es_if = false;
@@ -276,52 +292,49 @@ public class Identifica {
 		}
 	}	
 
+	// Método que maneja el uso del let
 	static void sentencia_let (Nodo act) throws ScriptException {
 		
-		//System.out.println("LET" + act.siguiente.siguiente.dato);
-		
-		//L_aux.Primero = null;
-		
-		es_let = true;
+		es_let = true; // Booleano que hace que las variables temp se inserten en la lista auxiliar
 		Lista L_auxLet = new Lista();
 		Nodo aux_let = act.siguiente;
+		
+		// Ciclo que recorre la varible temporal
 		while (!aux_let.dato.equals("in")) {
 			L_auxLet.InsertaFinal(aux_let.dato);
 			aux_let = aux_let.siguiente;
 		}
 		
-		
+		// Se llama al método inserta pra que otorgue valor y tipo a las variables temp
 		Inserta(L_auxLet);
 		
-		//L_aux.Imprimir();
-		
-		//System.out.println(aux_let.dato);
-		aux_let = aux_let.siguiente;
+		aux_let = aux_let.siguiente; // Brinca el in
 		Lista aux = new Lista();
-		boolean end = false;
+		boolean end = false; // Para el uso del let dentro del let
 		
+		// Ciclo para enviar el cuerpo del let
 		while (!aux_let.dato.equals("end") || end) {
 			if (aux_let.dato.equals("let")) end = true;
 			if (aux_let.dato.equals("end") && end) end = false;
 			aux.InsertaFinal(aux_let.dato);
 			aux_let = aux_let.siguiente;
 		}
-		//System.out.println(aux.Primero.dato);
+		
 		Ambientes(aux.Primero);
 	}
-
 	
+	// Método para el uso del if que determina la verasidad de la condición
 	static boolean Evaluar () {
-		
-		//System.out.println ("EVAL");
 		
 		boolean resultado;
 		
+		// Si solamente es una expresión
 		if (and_or.Primero.siguiente == null) {
 			if (and_or.Primero.cumple) resultado = true;
 			else resultado = false;
 		}
 		
+		// Por si tiene operadores lógicos
 		else {
 			Nodo aux = and_or.Primero;
 			resultado = Evaluar_aux (aux.cumple, aux.siguiente.dato, aux.siguiente.siguiente.cumple);
@@ -329,23 +342,22 @@ public class Identifica {
 			aux = aux.siguiente.siguiente.siguiente;
 			
 			while (aux != null) {
-				//System.out.println(resultado + aux.dato + aux.siguiente.cumple);
+				
 				resultado = Evaluar_aux(resultado, aux.dato, aux.siguiente.cumple);
 				aux = aux.siguiente.siguiente;
 			}
 		}
-		//System.out.println ("SalI");
 		and_or.Primero = null;
 		return resultado;
 	}
-
 	
+	// Método especial para el uso del and y el or en los if
 	static boolean Evaluar_aux (boolean bool1, String operador, boolean bool2 ) {
 		if (operador.equals("orelse")) return bool1 || bool2;
 		else  return bool1 && bool2;
 	}
 	
-
+	// Método que determina si un string es un número
 	static boolean esNumero(String entrada){
 		try{
 			Long.parseLong(entrada);
@@ -357,7 +369,6 @@ public class Identifica {
 	}
 
 	//Metodo que realiza operaciones a partir de una cadena
-	
 	static String Operar(String op) throws ScriptException{
 		String resultado = "";
 		float resultadoAux;
@@ -367,13 +378,12 @@ public class Identifica {
 		resultado = Operador.eval(op).toString();
 		resultadoAux = Float.parseFloat(resultado);
 		resulInt = (int) resultadoAux;
-		//System.out.println(resulInt);
 		resultado = resulInt+"";
 		
 		return resultado;
 	}
 	
-	
+	//Método que otorga el tipo a als tuplas
 	static String VerificaTupla(Lista L){
 		Nodo ap=L.Primero.siguiente;
 	
@@ -445,7 +455,7 @@ public class Identifica {
 		return tipo;
 	}
 
-
+	//Método que otorga el tipo a las listas
 	static String VerificaLista (Lista L){
 		Nodo aux = L.Primero.siguiente;
 		
@@ -496,7 +506,7 @@ public class Identifica {
 	static String RevisaTabla(String elemento){
 		if(!elemento.equals("(")&&!elemento.equals(",")&&!elemento.equals(")")&&!elemento.equals("[")&&!elemento.equals("]")&&!elemento.equals("True")&&!elemento.equals("False")){
 			Nodo puntero;
-			//System.out.println (let);
+			// Para el caso del let
 			if (let) puntero = L_aux.Ultimo;
 			else puntero = LResultado.Ultimo;
 			
@@ -515,7 +525,8 @@ public class Identifica {
 		}
 		return "";
 	}
-
+	
+	// Método que retorna el valor de un elemento en la lista resultado
 	static String VerificaTipo(String elemento){
 		Nodo aux = LResultado.Ultimo;
 			while(!aux.dato.equals(elemento)){
