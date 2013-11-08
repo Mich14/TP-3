@@ -277,6 +277,11 @@ public class Identifica {
 	}	
 
 	static void sentencia_let (Nodo act) throws ScriptException {
+		
+		//System.out.println("LET" + act.siguiente.siguiente.dato);
+		
+		//L_aux.Primero = null;
+		
 		es_let = true;
 		Lista L_auxLet = new Lista();
 		Nodo aux_let = act.siguiente;
@@ -284,17 +289,24 @@ public class Identifica {
 			L_auxLet.InsertaFinal(aux_let.dato);
 			aux_let = aux_let.siguiente;
 		}
+		
+		
 		Inserta(L_auxLet);
+		
+		//L_aux.Imprimir();
 		
 		//System.out.println(aux_let.dato);
 		aux_let = aux_let.siguiente;
 		Lista aux = new Lista();
+		boolean end = false;
 		
-		while (!aux_let.dato.equals("end")) {
+		while (!aux_let.dato.equals("end") || end) {
+			if (aux_let.dato.equals("let")) end = true;
+			if (aux_let.dato.equals("end") && end) end = false;
 			aux.InsertaFinal(aux_let.dato);
 			aux_let = aux_let.siguiente;
 		}
-		
+		//System.out.println(aux.Primero.dato);
 		Ambientes(aux.Primero);
 	}
 
